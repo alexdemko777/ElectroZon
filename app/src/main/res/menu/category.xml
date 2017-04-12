@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Computers"
+        android:id="@+id/action_computers"/>
+    <item
+        android:title="Tablets"
+        android:id="@+id/action_tablets"/>
+    <item
+        android:title="Cell Phones"
+        android:id="@+id/action_cellphones"/>
+    <item
+        android:title="Watches"
+        android:id="@+id/action_watches"/>
+
+</menu>

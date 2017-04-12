@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    tools:context=".HomeActivity">
+    <item
+        android:title="Add"
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_add_black_24dp"
+        app:showAsAction="always"/>
+    <item
+        android:title="Cart"
+        android:id="@+id/action_cart"
+        android:icon="@drawable/ic_add_shopping_cart_black_24dp"
+        app:showAsAction="always"/>
+    <item
+        android:title="Settings"
+        android:id="@+id/action_settings"
+        app:showAsAction="never"/>
+</menu>
