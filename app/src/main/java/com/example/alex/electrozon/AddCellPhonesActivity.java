@@ -14,6 +14,7 @@ import static java.sql.Types.NULL;
 
 public class AddCellPhonesActivity extends AppCompatActivity {
     EditText productName;
+    EditText productDesc;
     EditText qty;
     EditText price;
     SQLiteDatabase dbHomePage;
@@ -76,6 +77,7 @@ public class AddCellPhonesActivity extends AppCompatActivity {
                 !price.getText().toString().equals(""))
         {
             Product product = new Product(NULL, productName.getText().toString(),
+                    productDesc.getText().toString(),
                     Long.valueOf(qty.getText().toString()),
                     Long.valueOf(price.getText().toString()));
             insertDataToDbTable(product);

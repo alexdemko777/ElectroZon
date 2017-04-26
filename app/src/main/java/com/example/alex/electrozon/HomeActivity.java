@@ -4,13 +4,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,22 +23,28 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
-    ListView productListView;
-    SQLiteDatabase dbHomePage;
-    ArrayList<Product> productList;
-    ArrayAdapter<Product> adapter;
+    private ListView productListView;
+    private SQLiteDatabase dbHomePage;
+    private ArrayList<Product> productList;
+    private ArrayAdapter<Product> adapter;
+    private int productId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        //productId = extras.getInt("TICKET_ID");
         productList = new ArrayList<Product>();
-        productListView = (ListView) findViewById(R.id.listViewProducts);
         adapter = new ArrayAdapter<Product>(this, android.R.layout.simple_list_item_1, productList);
+        productListView = (ListView) findViewById(R.id.listViewProducts);
         productListView.setAdapter(adapter);
+        // register for popup menu
+        registerForContextMenu(productListView);
+        // open database and get products
         openDatabase();
         getProducts();
-    }
+
+            }
     // open database function, database name is electrozondata in sqlite
     private void openDatabase(){
         try {
@@ -43,6 +53,11 @@ public class HomeActivity extends AppCompatActivity {
             Log.i("message", "openDatabase(): " + e.getMessage());
             finish();
         }
+    }
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("ITEMS", productList);
+        outState.putInt("ID", productId);
+        super.onSaveInstanceState(outState);
     }
     // get product from the database function
     private void getProducts() {
@@ -55,7 +70,8 @@ public class HomeActivity extends AppCompatActivity {
                     tempProduct = new Product();
                     tempProduct.setProductId(cr.getInt(cr.getColumnIndex("id")));
                     tempProduct.setProductName(cr.getString(cr.getColumnIndex("product_name")));
-                    tempProduct.setQty(cr.getLong(cr.getColumnIndex("qty")));
+                    //tempProduct.setproductDesc(cr.getString(cr.getColumnIndex("product_desc")));
+                    //tempProduct.setQty(cr.getLong(cr.getColumnIndex("qty")));
                     tempProduct.setPrice(cr.getLong(cr.getColumnIndex("price")));
                     productList.add(tempProduct);
                 }
@@ -87,6 +103,39 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    // Create my popup
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.popup, menu);
+    }
+    // add to cart, view description function
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        if(item.getItemId()==R.id.action_AddToCart){
+            addToCartItem(info.position);
+            return true;
+        }
+        if(item.getItemId()==R.id.action_info){
+            //deleteTicket(info.position);
+            return true;
+        }
+        if(item.getItemId()==R.id.action_delete){
+            //deleteTicket(info.position);
+            return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+    // Add to cart function and pass it to another activity
+    public void addToCartItem(int index) {
+        Product editCart = productList.get(index);
+        Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+        intent.putParcelableArrayListExtra("ITEMS", productList);
+        intent.putExtra("ID", productId);
+        intent.putExtra("index", index);
+        startActivity(intent);
+    }
+
     public void showPopup(View view) {
         PopupMenu popup = new PopupMenu(this, view);
         popup.getMenuInflater().inflate(R.menu.category, popup.getMenu());

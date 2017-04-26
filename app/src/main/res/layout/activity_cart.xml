@@ -28,6 +28,13 @@
         android:textColor="#ffffff">
     </ListView>
 
+    <TextView
+        android:id="@+id/textViewProductsCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff">
+    </TextView>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

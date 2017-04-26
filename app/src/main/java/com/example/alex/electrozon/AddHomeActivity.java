@@ -18,6 +18,7 @@ import static java.sql.Types.NULL;
 
 public class AddHomeActivity extends AppCompatActivity {
     EditText productName;
+    EditText productDesc;
     EditText qty;
     EditText price;
     SQLiteDatabase dbHomePage;
@@ -26,6 +27,7 @@ public class AddHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_home);
         productName = (EditText) findViewById(R.id.editProduct);
+        productDesc = (EditText) findViewById(R.id.editDesc);
         price = (EditText) findViewById(R.id.editPrice);
         qty = (EditText) findViewById(R.id.editQty);
         openDatabase();
@@ -47,6 +49,7 @@ public class AddHomeActivity extends AppCompatActivity {
             String myQuery = "CREATE TABLE IF NOT EXISTS homeproduct (\n" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, \n" +
                     "product_name TEXT DEFAULT NULL, \n" +
+                    "product_desc TEXT DEFAULT NULL, \n" +
                     "qty INTEGER NOT NULL, \n" +
                     "price INTEGER NOT NULL);";
             dbHomePage.execSQL(myQuery);
@@ -61,6 +64,7 @@ public class AddHomeActivity extends AppCompatActivity {
     private void insertDataToDbTable(Product product) {
         ContentValues cv = new ContentValues();
         cv.put("product_name", product.getProductName());
+        cv.put("product_desc", product.getproductDesc());
         cv.put("qty", product.getQty());
         cv.put("price", product.getPrice());
         dbHomePage.insert("homeproduct", null, cv);
@@ -68,15 +72,18 @@ public class AddHomeActivity extends AppCompatActivity {
     }
     public void clearEditTextFields() {
         productName.setText("");
+        productDesc.setText("");
         qty.setText("");
         price.setText("");
     }
     public void btnAddProduct(View view) {
         if(!productName.getText().toString().equals("") &&
+                !productDesc.getText().toString().equals("") &&
                 !qty.getText().toString().equals("") &&
                 !price.getText().toString().equals(""))
         {
             Product product = new Product(NULL, productName.getText().toString(),
+                    productDesc.getText().toString(),
                     Long.valueOf(qty.getText().toString()),
                     Long.valueOf(price.getText().toString()));
             insertDataToDbTable(product);
