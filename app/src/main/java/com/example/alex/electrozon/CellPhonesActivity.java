@@ -7,8 +7,12 @@ import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,6 +24,7 @@ public class CellPhonesActivity extends AppCompatActivity {
     SQLiteDatabase dbHomePage;
     ArrayList<Product> productList;
     ArrayAdapter<Product> adapter;
+    private int productId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,8 @@ public class CellPhonesActivity extends AppCompatActivity {
         productListView = (ListView) findViewById(R.id.listViewProducts);
         adapter = new ArrayAdapter<Product>(this, android.R.layout.simple_list_item_1, productList);
         productListView.setAdapter(adapter);
+        // register for popup menu
+        registerForContextMenu(productListView);
         openDatabase();
         getProducts();
     }
@@ -46,12 +53,13 @@ public class CellPhonesActivity extends AppCompatActivity {
         Product tempProduct;
         productList.clear();
         try {
-            Cursor cr = dbHomePage.rawQuery("SELECT * FROM cellphonesproduct;", null);
+            Cursor cr = dbHomePage.rawQuery("SELECT * FROM cellphonesproduct1;", null);
             if (cr != null) {
                 while (cr.moveToNext()) {
                     tempProduct = new Product();
                     tempProduct.setProductId(cr.getInt(cr.getColumnIndex("id")));
                     tempProduct.setProductName(cr.getString(cr.getColumnIndex("product_name")));
+                    tempProduct.setproductDesc(cr.getString(cr.getColumnIndex("product_desc")));
                     tempProduct.setQty(cr.getLong(cr.getColumnIndex("qty")));
                     tempProduct.setPrice(cr.getLong(cr.getColumnIndex("price")));
                     productList.add(tempProduct);
@@ -68,6 +76,42 @@ public class CellPhonesActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu,menu);
         return true;
     }
+    // Create my popup
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.popup, menu);
+    }
+    // add to cart, view description function
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        if(item.getItemId()==R.id.action_AddToCart){
+            addToCartItem(info.position);
+            return true;
+        }
+        if(item.getItemId()==R.id.action_info){
+            viewInfo(info.position);
+            return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+    // Add to cart function and pass it to another activity
+    public void addToCartItem(int index) {
+        Intent intent = new Intent(CellPhonesActivity.this, CartActivity.class);
+        intent.putParcelableArrayListExtra("ITEMS", productList);
+        intent.putExtra("ID", productId);
+        intent.putExtra("index", index);
+        //intent.putParcelableArrayListExtra("ITEMSc", productListCart);
+        startActivity(intent);
+    }
+    // View Info
+    public void viewInfo(int index) {
+        Intent intent = new Intent(CellPhonesActivity.this, InfoActivity.class);
+        intent.putParcelableArrayListExtra("ITEMS", productList);
+        //intent.putExtra("ID", productId);
+        intent.putExtra("index", index);
+        startActivity(intent);
+    }
     // action bar navigation buttons
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.action_add){
@@ -75,9 +119,13 @@ public class CellPhonesActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-        if(item.getItemId()==R.id.action_cart){
-            Intent intent = new Intent(CellPhonesActivity.this, CartActivity.class);
+        if(item.getItemId()==R.id.action_home){
+            Intent intent = new Intent(CellPhonesActivity.this, HomeActivity.class);
             startActivity(intent);
+            return true;
+        }
+        if(item.getItemId()==R.id.action_cart){
+            Toast.makeText(this, "Please press and hold an item to add to cart", Toast.LENGTH_LONG).show();
             return true;
         }
         if(item.getItemId()==R.id.action_settings){

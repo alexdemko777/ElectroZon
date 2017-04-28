@@ -81,10 +81,8 @@ public class Product implements Parcelable{
     }
 
     public String toString(){
-        return "Id: " + getProductId() + " " +
-                "   " + getProductName() + " " +
-               // "    Qty: " + getQty() + " " +
-                " $" + getPrice();
+        return " $" + getPrice() + "        " +
+                "   " + getProductName();
     }
 
     @Override

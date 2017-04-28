@@ -6,8 +6,5 @@
     <item
         android:title="View More Info"
         android:id="@+id/action_info"/>
-    <item
-        android:title="Delete - (Administrator)"
-        android:id="@+id/action_delete"/>
 
 </menu>

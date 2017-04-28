@@ -80,7 +80,13 @@
         android:layout_gravity="center"
         android:textColor="#ffffff"
         android:paddingTop="4dp"
-        android:text="Total: $"/>
+        android:text="Cart Item:"/>
+    <ListView
+        android:id="@+id/listViewProductsCartP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff">
+    </ListView>
 
     <Button
         android:layout_width="match_parent"

@@ -27,7 +27,8 @@
         <activity android:name=".CellPhonesActivity" />
         <activity android:name=".AddCellPhonesActivity" />
         <activity android:name=".WatchesActivity" />
-        <activity android:name=".AddWatchesActivity"></activity>
+        <activity android:name=".AddWatchesActivity" />
+        <activity android:name=".InfoActivity"></activity>
     </application>
 
 </manifest>

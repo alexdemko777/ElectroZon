@@ -44,6 +44,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp"
+        android:hint="Enter Product Desc"
+        android:id="@+id/editDescC" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
         android:hint="Enter Qty"
         android:id="@+id/editQtyC" />
     <EditText

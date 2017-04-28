@@ -26,6 +26,7 @@ public class HomeActivity extends AppCompatActivity {
     private ListView productListView;
     private SQLiteDatabase dbHomePage;
     private ArrayList<Product> productList;
+    private ArrayList<Product> productListCart;
     private ArrayAdapter<Product> adapter;
     private int productId;
 
@@ -33,7 +34,9 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //productId = extras.getInt("TICKET_ID");
+
+
+
         productList = new ArrayList<Product>();
         adapter = new ArrayAdapter<Product>(this, android.R.layout.simple_list_item_1, productList);
         productListView = (ListView) findViewById(R.id.listViewProducts);
@@ -54,24 +57,20 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         }
     }
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("ITEMS", productList);
-        outState.putInt("ID", productId);
-        super.onSaveInstanceState(outState);
-    }
+
     // get product from the database function
     private void getProducts() {
         Product tempProduct;
         productList.clear();
         try {
-            Cursor cr = dbHomePage.rawQuery("SELECT * FROM homeproduct;", null);
+            Cursor cr = dbHomePage.rawQuery("SELECT * FROM homeproduct1;", null);
             if (cr != null) {
                 while (cr.moveToNext()) {
                     tempProduct = new Product();
                     tempProduct.setProductId(cr.getInt(cr.getColumnIndex("id")));
                     tempProduct.setProductName(cr.getString(cr.getColumnIndex("product_name")));
-                    //tempProduct.setproductDesc(cr.getString(cr.getColumnIndex("product_desc")));
-                    //tempProduct.setQty(cr.getLong(cr.getColumnIndex("qty")));
+                    tempProduct.setproductDesc(cr.getString(cr.getColumnIndex("product_desc")));
+                    tempProduct.setQty(cr.getLong(cr.getColumnIndex("qty")));
                     tempProduct.setPrice(cr.getLong(cr.getColumnIndex("price")));
                     productList.add(tempProduct);
                 }
@@ -94,8 +93,8 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId()==R.id.action_cart){
-            Intent intent = new Intent(HomeActivity.this, CartActivity.class);
-            startActivity(intent);
+            Toast.makeText(this, "Please press and hold an item to add to cart", Toast.LENGTH_LONG).show();
+            return true;
         }
         if(item.getItemId()==R.id.action_settings){
             Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show();
@@ -117,21 +116,26 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         if(item.getItemId()==R.id.action_info){
-            //deleteTicket(info.position);
-            return true;
-        }
-        if(item.getItemId()==R.id.action_delete){
-            //deleteTicket(info.position);
+            viewInfo(info.position);
             return true;
         }
         return super.onContextItemSelected(item);
     }
     // Add to cart function and pass it to another activity
     public void addToCartItem(int index) {
-        Product editCart = productList.get(index);
         Intent intent = new Intent(HomeActivity.this, CartActivity.class);
         intent.putParcelableArrayListExtra("ITEMS", productList);
         intent.putExtra("ID", productId);
+        intent.putExtra("index", index);
+        //intent.putParcelableArrayListExtra("ITEMSc", productListCart);
+        startActivity(intent);
+    }
+
+    // View Info
+    public void viewInfo(int index) {
+        Intent intent = new Intent(HomeActivity.this, InfoActivity.class);
+        intent.putParcelableArrayListExtra("ITEMS", productList);
+        //intent.putExtra("ID", productId);
         intent.putExtra("index", index);
         startActivity(intent);
     }

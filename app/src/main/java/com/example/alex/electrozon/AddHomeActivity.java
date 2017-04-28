@@ -1,6 +1,7 @@
 package com.example.alex.electrozon;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -46,7 +47,7 @@ public class AddHomeActivity extends AppCompatActivity {
     private void createProductTable() {
         dbHomePage.beginTransaction();
         try {
-            String myQuery = "CREATE TABLE IF NOT EXISTS homeproduct (\n" +
+            String myQuery = "CREATE TABLE IF NOT EXISTS homeproduct1 (\n" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, \n" +
                     "product_name TEXT DEFAULT NULL, \n" +
                     "product_desc TEXT DEFAULT NULL, \n" +
@@ -67,7 +68,7 @@ public class AddHomeActivity extends AppCompatActivity {
         cv.put("product_desc", product.getproductDesc());
         cv.put("qty", product.getQty());
         cv.put("price", product.getPrice());
-        dbHomePage.insert("homeproduct", null, cv);
+        dbHomePage.insert("homeproduct1", null, cv);
         cv.clear();
     }
     public void clearEditTextFields() {
@@ -88,6 +89,8 @@ public class AddHomeActivity extends AppCompatActivity {
                     Long.valueOf(price.getText().toString()));
             insertDataToDbTable(product);
             clearEditTextFields();
+            Intent intent = new Intent(AddHomeActivity.this, HomeActivity.class);
+            startActivity(intent);
         }
     }
 }

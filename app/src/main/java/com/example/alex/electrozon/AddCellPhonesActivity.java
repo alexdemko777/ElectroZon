@@ -1,6 +1,7 @@
 package com.example.alex.electrozon;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -24,6 +25,7 @@ public class AddCellPhonesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cell_phones);
         productName = (EditText) findViewById(R.id.editProductP);
+        productDesc = (EditText) findViewById(R.id.editDescP);
         price = (EditText) findViewById(R.id.editPriceP);
         qty = (EditText) findViewById(R.id.editQtyP);
         openDatabase();
@@ -42,9 +44,10 @@ public class AddCellPhonesActivity extends AppCompatActivity {
     private void createProductTable() {
         dbHomePage.beginTransaction();
         try {
-            String myQuery = "CREATE TABLE IF NOT EXISTS cellphonesproduct (\n" +
+            String myQuery = "CREATE TABLE IF NOT EXISTS cellphonesproduct1 (\n" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, \n" +
                     "product_name TEXT DEFAULT NULL, \n" +
+                    "product_desc TEXT DEFAULT NULL, \n" +
                     "qty INTEGER NOT NULL, \n" +
                     "price INTEGER NOT NULL);";
             dbHomePage.execSQL(myQuery);
@@ -60,9 +63,10 @@ public class AddCellPhonesActivity extends AppCompatActivity {
     private void insertDataToDbTable(Product product) {
         ContentValues cv = new ContentValues();
         cv.put("product_name", product.getProductName());
+        cv.put("product_desc", product.getproductDesc());
         cv.put("qty", product.getQty());
         cv.put("price", product.getPrice());
-        dbHomePage.insert("cellphonesproduct", null, cv);
+        dbHomePage.insert("cellphonesproduct1", null, cv);
         cv.clear();
     }
     // clear all fields
@@ -82,6 +86,8 @@ public class AddCellPhonesActivity extends AppCompatActivity {
                     Long.valueOf(price.getText().toString()));
             insertDataToDbTable(product);
             clearEditTextFields();
+            Intent intent = new Intent(AddCellPhonesActivity.this, CellPhonesActivity.class);
+            startActivity(intent);
         }
     }
 }
